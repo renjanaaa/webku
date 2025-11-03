@@ -15,15 +15,7 @@ export default function Closing({ responses, onRestart }: ClosingProps) {
     setIsSaving(true)
     setError(null)
     try {
-      const gasUrl = process.env.NEXT_PUBLIC_GAS_URL
-
-      if (!gasUrl) {
-        setError("Google Apps Script URL not configured. Please follow setup instructions.")
-        setIsSaving(false)
-        return
-      }
-
-      const response = await fetch(gasUrl, {
+      const response = await fetch("/api/save-responses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,12 +26,16 @@ export default function Closing({ responses, onRestart }: ClosingProps) {
         }),
       })
 
+      console.log("[v0] Response status:", response.status)
+
       const result = await response.json()
+
+      console.log("[v0] Response result:", result)
 
       if (result.success) {
         setSaved(true)
       } else {
-        setError("Failed to save responses. Please try again.")
+        setError(result.error || "Failed to save responses. Please try again.")
       }
     } catch (err) {
       console.error("[v0] Error saving to sheets:", err)
