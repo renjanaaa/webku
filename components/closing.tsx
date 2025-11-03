@@ -100,18 +100,6 @@ export default function Closing({ responses, onRestart }: ClosingProps) {
             START AGAIN
           </button>
         </div>
-
-        {/* Response summary */}
-        <div className="mt-12 pt-8 border-t border-border/30 text-left">
-          <p className="text-xs text-muted-foreground tracking-widest mb-4">RESPONSES RECORDED</p>
-          <div className="max-h-40 overflow-y-auto space-y-2 text-sm text-foreground/60 font-light">
-            {Object.entries(responses).map(([questionId, answer]) => (
-              <p key={questionId} className="line-clamp-2">
-                Q{questionId}: {answer || "(no response)"}
-              </p>
-            ))}
-          </div>
-        </div>
       </div>
     </main>
   )
