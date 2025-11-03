@@ -16,7 +16,6 @@ function initializeSheet() {
   }
 }
 
-// Handle POST requests from frontend
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -47,20 +46,49 @@ function doPost(e) {
     // Add row to sheet
     sheet.appendRow(row);
     
-    return ContentService
+    const output = ContentService
       .createTextOutput(JSON.stringify({ success: true }))
       .setMimeType(ContentService.MimeType.JSON);
+    
+    // Add CORS headers
+    output.setHeader("Access-Control-Allow-Origin", "*");
+    output.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
+    output.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    
+    return output;
       
   } catch (error) {
-    return ContentService
+    const output = ContentService
       .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
+    
+    // Add CORS headers to error response too
+    output.setHeader("Access-Control-Allow-Origin", "*");
+    output.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
+    output.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    
+    return output;
   }
+}
+
+function doOptions(e) {
+  const output = ContentService.createTextOutput();
+  output.setHeader("Access-Control-Allow-Origin", "*");
+  output.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
+  output.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  output.setHeader("Access-Control-Max-Age", "86400");
+  return output;
 }
 
 // Handle GET requests (optional - for testing)
 function doGet(e) {
-  return ContentService
+  const output = ContentService
     .createTextOutput(JSON.stringify({ message: "POST data to save responses" }))
     .setMimeType(ContentService.MimeType.JSON);
+  
+  output.setHeader("Access-Control-Allow-Origin", "*");
+  output.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
+  output.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  
+  return output;
 }
